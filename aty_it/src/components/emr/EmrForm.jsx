@@ -13,7 +13,7 @@ function EmrForm({ initialData, onSubmit, onCancel, isSubmitting }) {
       lastName: '',
       position: '',
       department: '',
-      createdBy: 'Chit Ko Ko',
+      createdBy: '',
       status: 'Active',
       remark: '',
     },
@@ -31,16 +31,25 @@ function EmrForm({ initialData, onSubmit, onCancel, isSubmitting }) {
 
   const departments = [
     'IT',
-    'HR',
-    'Finance',
-    'Operations',
-    'Sales',
-    'Marketing',
-    'Customer Support',
+    'Reception',
+    'Cashier',
+    'Pharmacy',
+    'Lab',
+    'Imaging',
+    'Ememgery',
+    'IPD',
+    'OPD',
+    'OT',
+    'HK',
+    'M&E',
+    'MMD',
+    'F&B',
+    'Mini Mark',
     'Other',
   ];
 
   const createdByOptions = [
+    
     'Chit Ko Ko',
     'Nay Myo Maung',
     'It Teams',
@@ -201,7 +210,9 @@ function EmrForm({ initialData, onSubmit, onCancel, isSubmitting }) {
             {...register('createdBy')}
             className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-gray-700 text-gray-100"
           >
+            <option value="" className="bg-gray-700">Select Person</option>
             {createdByOptions.map((opt) => (
+              
               <option key={opt} value={opt} className="bg-gray-700">
                 {opt}
               </option>

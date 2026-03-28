@@ -53,22 +53,33 @@ function KpiForm({ initialData, onSubmit, onCancel, isSubmitting }) {
   }, [startDateTime, endDateTime, setValue]);
 
   const issueTypes = [
-    'Network',
-    'Hardware',
-    'Software',
-    'Security',
-    'Performance',
+    'Pc Issue',
+    'Printer',
+    'EMR Issuse',
+    'EMR User Creation',
+    'EMR User Rights',
+    'Network Issue',
+    'Server Issue',
+    'EMR User Modification',
     'Other',
   ];
 
   const departments = [
     'IT',
-    'HR',
-    'Finance',
-    'Operations',
-    'Sales',
-    'Marketing',
-    'Customer Support',
+    'Reception',
+    'Cashier',
+    'Pharmacy',
+    'Lab',
+    'Imaging',
+    'Ememgery',
+    'IPD',
+    'OPD',
+    'OT',
+    'HK',
+    'M&E',
+    'MMD',
+    'F&B',
+    'Mini Mark',
     'Other',
   ];
 
