@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 
-function Sidebar({ isOpen }) {
+function Sidebar({ isOpen, isCollapsed, onToggle }) {
   const navItems = [
     {
       label: 'KPI Details',
@@ -58,13 +58,39 @@ function Sidebar({ isOpen }) {
 
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-16 bottom-0 w-64 bg-gray-900 text-gray-100 z-40 transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+        className={`fixed left-0 top-16 bottom-0 bg-gray-900 text-gray-100 z-40 transition-all duration-300 ease-in-out lg:translate-x-0 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        } ${isCollapsed ? 'w-20' : 'w-64'}`}
       >
         <nav className="flex flex-col h-full">
+          {/* Toggle Button - Top of Sidebar */}
+          <div className="flex items-center justify-end px-2 py-3 border-b border-gray-800">
+            <button
+              type="button"
+              onClick={onToggle}
+              className="p-2 rounded-md hover:bg-gray-800 transition-colors hidden lg:block"
+              aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            >
+              <svg
+                className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${
+                  isCollapsed ? 'rotate-180' : ''
+                }`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
+                />
+              </svg>
+            </button>
+          </div>
+
           {/* Navigation Links */}
-          <ul className="flex-1 py-4">
+          <ul className="flex-1 py-4 overflow-y-auto">
             {navItems.map((item) => (
               <li key={item.path}>
                 <NavLink
@@ -74,21 +100,26 @@ function Sidebar({ isOpen }) {
                       isActive
                         ? 'bg-indigo-600 text-white'
                         : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-                    }`
+                    } ${isCollapsed ? 'justify-center' : ''}`
                   }
+                  title={isCollapsed ? item.label : ''}
                 >
                   {item.icon}
-                  <span>{item.label}</span>
+                  <span className={`${isCollapsed ? 'hidden' : 'inline'}`}>
+                    {item.label}
+                  </span>
                 </NavLink>
               </li>
             ))}
           </ul>
 
           {/* Sidebar Footer */}
-          <div className="p-4 border-t border-gray-800">
-            <div className="flex items-center gap-3 text-sm text-gray-400">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span>System Online</span>
+          <div className={`p-4 border-t border-gray-800 ${isCollapsed ? 'px-2' : ''}`}>
+            <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'}`}>
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse flex-shrink-0"></div>
+              <span className={`text-sm text-gray-400 ${isCollapsed ? 'hidden' : 'inline'}`}>
+                System Online
+              </span>
             </div>
           </div>
         </nav>
