@@ -107,10 +107,10 @@ function Navbar({ sidebarOpen, setSidebarOpen }) {
             {userMenuOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-700">
                 <a
-                  href="/user-account"
+                  href="/emr-user-account"
                   className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
                 >
-                  Account Settings
+                  EMR User Account
                 </a>
                 <a
                   href="/issue-log"

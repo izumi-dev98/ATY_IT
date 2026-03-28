@@ -18,7 +18,7 @@ function Sidebar({ isOpen, isCollapsed, onToggle }) {
     },
     {
       label: 'EMR User Account',
-      path: '/user-account',
+      path: '/emr-user-account',
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path

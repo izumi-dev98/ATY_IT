@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import KpiDetails from './pages/KpiDetails';
-import UserAccount from './pages/UserAccount';
+import EmrUserAccount from './pages/EmrUserAccount';
 import IssueLog from './pages/IssueLog';
 import './App.css';
 
@@ -37,7 +37,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Navigate to="/kpi-details" replace />} />
             <Route path="/kpi-details" element={<KpiDetails />} />
-            <Route path="/user-account" element={<UserAccount />} />
+            <Route path="/emr-user-account" element={<EmrUserAccount />} />
             <Route path="/issue-log" element={<IssueLog />} />
           </Routes>
         </main>
