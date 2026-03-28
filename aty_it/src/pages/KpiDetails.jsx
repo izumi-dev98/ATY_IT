@@ -27,6 +27,8 @@ function KpiDetails() {
   const [editingRecord, setEditingRecord] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
+  const [groupedByDate, setGroupedByDate] = useState(true);
+  const [expandedDates, setExpandedDates] = useState(new Set());
 
   // Fetch data from Supabase
   const fetchData = useCallback(async () => {
@@ -158,6 +160,47 @@ function KpiDetails() {
 
   const handleClearSelection = () => {
     setSelectedRows([]);
+  };
+
+  // Group data by date
+  const groupDataByDate = (dataArray) => {
+    const groups = {};
+    dataArray.forEach((row) => {
+      const date = row.date || 'No Date';
+      if (!groups[date]) {
+        groups[date] = [];
+      }
+      groups[date].push(row);
+    });
+    // Sort dates in descending order
+    return Object.entries(groups).sort((a, b) => {
+      if (a[0] === 'No Date') return 1;
+      if (b[0] === 'No Date') return -1;
+      return b[0].localeCompare(a[0]);
+    });
+  };
+
+  // Toggle date group expand/collapse
+  const toggleDateGroup = (date) => {
+    setExpandedDates((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(date)) {
+        newSet.delete(date);
+      } else {
+        newSet.add(date);
+      }
+      return newSet;
+    });
+  };
+
+  // Expand/collapse all groups
+  const expandAllGroups = () => {
+    const allDates = new Set(sortedData.map((row) => row.date || 'No Date'));
+    setExpandedDates(allDates);
+  };
+
+  const collapseAllGroups = () => {
+    setExpandedDates(new Set());
   };
 
   const handleOpenModal = (record = null) => {
@@ -385,6 +428,16 @@ function KpiDetails() {
       {/* Table */}
       <KpiTable
         data={paginatedData}
+        groupedData={groupDataByDate(sortedData)}
+        groupedByDate={groupedByDate}
+        onToggleGroupedByDate={(value) => {
+          setGroupedByDate(value);
+          setCurrentPage(1);
+        }}
+        expandedDates={expandedDates}
+        onToggleDateGroup={toggleDateGroup}
+        onExpandAllGroups={expandAllGroups}
+        onCollapseAllGroups={collapseAllGroups}
         sortConfig={sortConfig}
         onSort={handleSort}
         selectedRows={selectedRows}
