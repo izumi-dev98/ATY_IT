@@ -22,7 +22,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-900">
         <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Sidebar
           isOpen={sidebarOpen}
@@ -31,8 +31,8 @@ function App() {
         />
         <main
           className={`pt-16 transition-all duration-300 ${
-            sidebarOpen ? 'lg:ml-64' : 'ml-0 lg:ml-64'
-          } ${sidebarCollapsed ? 'lg:ml-20' : ''}`}
+            sidebarCollapsed ? 'lg:ml-20' : 'lg:ml-64'
+          }`}
         >
           <Routes>
             <Route path="/" element={<Navigate to="/kpi-details" replace />} />
