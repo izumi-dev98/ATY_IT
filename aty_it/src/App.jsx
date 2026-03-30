@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { TableThemeProvider } from './contexts/TableThemeContext';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import KpiDetails from './pages/KpiDetails';
@@ -22,7 +23,8 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-gray-900">
+      <TableThemeProvider>
+        <div className="min-h-screen bg-gray-900">
         <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Sidebar
           isOpen={sidebarOpen}
@@ -42,6 +44,7 @@ function App() {
           </Routes>
         </main>
       </div>
+    </TableThemeProvider>
     </BrowserRouter>
   );
 }
