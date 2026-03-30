@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { formatMyanmarDate, formatMyanmarTime } from '../../utils/formatMyanmarDate';
+import { useTableTheme } from '../../contexts/TableThemeContext';
 
 function KpiTable({
   data,
@@ -16,6 +17,8 @@ function KpiTable({
   totalPages,
   onPageChange,
 }) {
+  const theme = useTableTheme().currentTheme;
+
   const columns = [
     { key: 'date', label: 'Date', sortable: true, width: '100px' },
     { key: 'issueType', label: 'Issue Type', sortable: true, width: '120px' },
@@ -36,13 +39,18 @@ function KpiTable({
   };
 
   const getSortIcon = (key) => {
-    if (sortConfig.key !== key) return 'text-gray-300';
-    return sortConfig.direction === 'asc' ? 'text-indigo-600' : 'text-indigo-600';
+    if (sortConfig.key !== key) return theme.sortIcon.default;
+    return theme.sortIcon.active;
   };
 
   const getSortArrow = (key) => {
     if (sortConfig.key !== key) return '↑↓';
     return sortConfig.direction === 'asc' ? '↑' : '↓';
+  };
+
+  const getStatusBadgeClass = (status) => {
+    if (status === 'Completed') return theme.statusBadge.completed;
+    return theme.statusBadge.pending;
   };
 
   const tableRef = useRef(null);
@@ -61,10 +69,10 @@ function KpiTable({
 
   if (loading) {
     return (
-      <div className="bg-gray-800 rounded-lg shadow overflow-hidden">
+      <div className={`${theme.loading.container}`}>
         <div className="animate-pulse p-4 space-y-4">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-12 bg-gray-700 rounded" />
+            <div key={i} className={`h-12 ${theme.loading.skeleton}`} />
           ))}
         </div>
       </div>
@@ -73,9 +81,9 @@ function KpiTable({
 
   if (data.length === 0) {
     return (
-      <div className="bg-gray-800 rounded-lg shadow p-12 text-center">
+      <div className={theme.emptyState.container}>
         <svg
-          className="mx-auto h-12 w-12 text-gray-500"
+          className={`mx-auto h-12 w-12 ${theme.emptyState.icon}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -87,32 +95,32 @@ function KpiTable({
             d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
           />
         </svg>
-        <h3 className="mt-4 text-lg font-medium text-gray-100">No records found</h3>
-        <p className="mt-2 text-gray-400">Get started by creating a new KPI record.</p>
+        <h3 className={`mt-4 ${theme.emptyState.title}`}>No records found</h3>
+        <p className={`mt-2 ${theme.emptyState.description}`}>Get started by creating a new KPI record.</p>
       </div>
     );
   }
 
   return (
-    <div ref={tableRef} className="bg-gray-900 rounded-lg shadow overflow-hidden">
+    <div ref={tableRef} className={theme.container}>
       <div ref={scrollContainerRef} className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-700" style={{ tableLayout: 'fixed' }}>
-          <thead className="bg-gray-800">
+        <table className={`min-w-full ${theme.body.border}`} style={{ tableLayout: 'fixed' }}>
+          <thead className={theme.header.bg}>
             <tr>
-              <th className="px-4 py-3 text-left" style={{ width: '50px' }}>
+              <th className={`px-4 py-3 text-left ${theme.header.border}`} style={{ width: '50px' }}>
                 <input
                   type="checkbox"
                   checked={selectedRows.length === data.length && data.length > 0}
                   onChange={(e) => onSelectAll(e.target.checked)}
-                  className="w-4 h-4 text-indigo-600 border-gray-600 rounded focus:ring-indigo-500 bg-gray-700"
+                  className={`w-4 h-4 ${theme.checkbox}`}
                 />
               </th>
               {columns.map((col) => (
                 <th
                   key={col.key}
                   onClick={() => col.sortable && handleSort(col.key)}
-                  className={`px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider ${
-                    col.sortable ? 'cursor-pointer hover:bg-gray-700' : ''
+                  className={`px-4 py-3 text-left text-xs font-medium uppercase tracking-wider ${theme.header.text} ${
+                    col.sortable ? `cursor-pointer ${theme.headerHover}` : ''
                   }`}
                   style={{ width: col.width }}
                 >
@@ -126,76 +134,72 @@ function KpiTable({
                   </div>
                 </th>
               ))}
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider" style={{ width: '80px' }}>
+              <th className={`px-4 py-3 text-left text-xs font-medium uppercase tracking-wider ${theme.header.text}`} style={{ width: '80px' }}>
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="bg-gray-900 divide-y divide-gray-700">
+          <tbody className={theme.body.bg}>
             {data.map((row) => (
               <tr
                 key={row.id}
-                className={`hover:bg-gray-800 transition-colors ${
-                  selectedRows.includes(row.id) ? 'bg-indigo-900/50' : ''
+                className={`${theme.row.default} ${theme.row.hover} ${
+                  selectedRows.includes(row.id) ? theme.row.selected : ''
                 }`}
               >
-                <td className="px-4 py-3">
+                <td className={theme.cell.padding}>
                   <input
                     type="checkbox"
                     checked={selectedRows.includes(row.id)}
                     onChange={(e) => onRowSelect(row.id, e.target.checked)}
-                    className="w-4 h-4 text-indigo-600 border-gray-600 rounded focus:ring-indigo-500 bg-gray-700"
+                    className={`w-4 h-4 ${theme.checkbox}`}
                   />
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-100 whitespace-nowrap truncate">
+                <td className={`text-sm whitespace-nowrap truncate ${theme.cell.text}`}>
                   {formatMyanmarDate(row.date)}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-100 whitespace-nowrap truncate">
+                <td className={`text-sm whitespace-nowrap truncate ${theme.cell.text}`}>
                   {row.issueType}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-100 whitespace-nowrap truncate">
+                <td className={`text-sm whitespace-nowrap truncate ${theme.cell.text}`}>
                   {row.department}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-100 truncate" title={row.description}>
+                <td className={`text-sm truncate ${theme.cell.text}`} title={row.description}>
                   {row.description}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-100 whitespace-nowrap truncate">
+                <td className={`text-sm whitespace-nowrap truncate ${theme.cell.text}`}>
                   {row.confirmBy || '-'}
                 </td>
-                <td className="px-4 py-3 whitespace-nowrap">
+                <td className="whitespace-nowrap">
                   <span
-                    className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                      row.status === 'Completed'
-                        ? 'bg-green-900/50 text-green-400'
-                        : 'bg-yellow-900/50 text-yellow-400'
-                    }`}
+                    className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadgeClass(row.status)}`}
                   >
                     {row.status}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-100 whitespace-nowrap truncate">
+                <td className={`text-sm whitespace-nowrap truncate ${theme.cell.text}`}>
                   {row.startTime ? formatMyanmarTime(row.startTime) : '-'}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-100 whitespace-nowrap truncate">
+                <td className={`text-sm whitespace-nowrap truncate ${theme.cell.text}`}>
                   {row.endTime ? formatMyanmarTime(row.endTime) : '-'}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-100 whitespace-nowrap truncate">
+                <td className={`text-sm whitespace-nowrap truncate ${theme.cell.text}`}>
                   {row.duration || '-'}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-100 whitespace-nowrap truncate">
+                <td className={`text-sm whitespace-nowrap truncate ${theme.cell.text}`}>
                   {row.doneBy || '-'}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-100 whitespace-nowrap truncate">
+                <td className={`text-sm whitespace-nowrap truncate ${theme.cell.text}`}>
                   {row.check || '-'}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-100 truncate" title={row.solution}>
+                <td className={`text-sm truncate ${theme.cell.text}`} title={row.solution}>
                   {row.solution || '-'}
                 </td>
-                <td className="px-4 py-3 text-sm">
+                <td className={theme.cell.padding}>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => onEdit(row)}
-                      className="text-indigo-400 hover:text-indigo-300 transition-colors"
+                      className={`${theme.actions.edit} transition-colors`}
                       aria-label="Edit row"
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -209,7 +213,7 @@ function KpiTable({
                     </button>
                     <button
                       onClick={() => onDelete(row.id)}
-                      className="text-red-400 hover:text-red-300 transition-colors"
+                      className={`${theme.actions.delete} transition-colors`}
                       aria-label="Delete row"
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -230,8 +234,8 @@ function KpiTable({
       </div>
 
       {/* Pagination */}
-      <div className="bg-gray-800 px-4 py-3 border-t border-gray-700 flex items-center justify-between">
-        <div className="text-sm text-gray-300">
+      <div className={`${theme.pagination.container} px-4 py-3 flex items-center justify-between`}>
+        <div className={`text-sm ${theme.pagination.text}`}>
           Showing {(currentPage - 1) * itemsPerPage + 1} to{' '}
           {Math.min(currentPage * itemsPerPage, data.length)} of {data.length} entries
         </div>
@@ -239,14 +243,14 @@ function KpiTable({
           <button
             onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className="px-4 py-1.5 text-sm border border-gray-600 rounded-md hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-gray-300"
+            className={`px-4 py-1.5 text-sm ${theme.pagination.button}`}
           >
             Previous
           </button>
           <button
             onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="px-4 py-1.5 text-sm border border-gray-600 rounded-md hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-gray-300"
+            className={`px-4 py-1.5 text-sm ${theme.pagination.button}`}
           >
             Next
           </button>

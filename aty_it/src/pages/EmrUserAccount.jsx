@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Swal from 'sweetalert2';
 import { supabase } from '../lib/supabaseClient';
+import TableThemeSelector from '../components/ui/TableThemeSelector';
 import EmrSearch from '../components/emr/EmrSearch';
 import EmrFilter from '../components/emr/EmrFilter';
 import EmrTable from '../components/emr/EmrTable';
@@ -332,20 +333,23 @@ function EmrUserAccount() {
             onSearchChange={handleSearchChange}
             onClear={() => setSearchQuery('')}
           />
-          <button
-            onClick={() => handleOpenModal()}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-            Add New Record
-          </button>
+          <div className="flex items-center gap-4">
+            <TableThemeSelector />
+            <button
+              onClick={() => handleOpenModal()}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              Add New Record
+            </button>
+          </div>
         </div>
 
         <EmrFilter
